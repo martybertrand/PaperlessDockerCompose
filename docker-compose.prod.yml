@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+
+  app-build:
+    network_mode: "host"
+    container_name: app-modop-build
+    build:
+      context: modop_v1
+      dockerfile: Dockerfile.prod
+    ports:
+      - '8877:8877'
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  
+  api:
+    network_mode: "host"
+    container_name: api-modop
+    build:
+      context: API_modop
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '2022:2022'
